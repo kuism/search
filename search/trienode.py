@@ -175,8 +175,8 @@ class Trie:
         self.suffixNode.__insert__(word, originalWord, frequency)
 
     def search(self, text):
-        # result = self.root.__search__(correction(text))
-        result = self.root.__search__(text)
+        result = self.root.__search__(correction(text))
+        # result = self.root.__search__(text)
         suffix_result = self.suffixNode.__search__(text)
         return result + suffix_result
 
