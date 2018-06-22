@@ -40,10 +40,9 @@ class TrieNode:
             if node.word is not None:
                 x.append(
                     {
-                        "isprefix": node.word == text,
-                        "word": node.word,
-                        "length": node.length,
-                        "frequency": node.frequency
+                        "w": node.word,
+                        "l": node.length,
+                        "f": node.frequency
                     }
                 )
 
@@ -90,18 +89,17 @@ class TrieNode:
             else:
                 resp = self.__get_all__(text)
                 for item in resp:
-                    item['edit_distance'] = self.__edit_distance__(item["word"], text, len(item["word"]), len(text))
-                resp = sorted(resp, key=lambda x: (x["edit_distance"], -x["frequency"], x["length"]))
+                    item['edit_distance'] = self.__edit_distance__(item["w"], text, len(item["w"]), len(text))
+                resp = sorted(resp, key=lambda x: (x["edit_distance"], -x["f"], x["l"]))
                 return resp
         else:
             resp = self.__get_all__(text)
             if self.word is not None and self.word == text:
                 resp = [
                     {
-                        "isprefix": self.word == text,
-                        "word": self.word,
-                        "length": self.length,
-                        "frequency": self.frequency
+                        "w": self.word,
+                        "l": self.length,
+                        "f": self.frequency
                     }
                 ] + resp
             return resp
@@ -120,9 +118,9 @@ class SuffixTrieNode:
 
         if pos + 1 == len(word):
             self.children[letter].words.append({
-                "word": original_word,
-                "length": len(original_word),
-                "frequency": frequency
+                "w": original_word,
+                "l": len(original_word),
+                "f": frequency
             })
         else:
             self.children[letter].__insert__(word, original_word, frequency, pos+1)
@@ -166,8 +164,9 @@ class Trie:
         for line in file:
             word, frequency = line[0:-2].split("\t")
             self.insert(word, int(frequency))
-            for i in range(1, len(word)-2):
-                self.suffix_insert(word[i:], word, int(frequency))
+            for i in range(1, len(word)-3):
+                if len(word[i:]) >= 3:
+                    self.suffix_insert(word[i:], word, int(frequency))
 
     def insert(self, word, frequency):
         self.root.__insert__(word, frequency)

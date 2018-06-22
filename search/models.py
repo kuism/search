@@ -9,8 +9,8 @@ class Search:
         if len(results) > 0 :
             if results[0]['word'] == text:
                 item = results[0]
-                return [item] + sorted(results[1:], key=lambda x: (-x["frequency"], x["length"]))
+                return [item] + sorted(results[1:], key=lambda x: (-x["f"], x["l"]))
             else:
-                return sorted(results, key=lambda x: (-x["frequency"], x["length"]))
+                return sorted(results, key=lambda x: (-x["f"], x["l"]))
         else:
             return []
