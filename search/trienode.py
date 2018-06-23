@@ -175,10 +175,5 @@ class Trie:
         result = self.root.__search__(correction(text))
         # result = self.root.__search__(text)
         suffix_result = self.suffixNode.__search__(text)
-        return result + suffix_result
+        return result, suffix_result
 
-
-
-
-# this will create the Trie Node
-Trie()
