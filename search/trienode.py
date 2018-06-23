@@ -177,3 +177,8 @@ class Trie:
         suffix_result = self.suffixNode.__search__(text)
         return result, suffix_result
 
+
+
+
+# this will create the Trie Node
+Trie()
