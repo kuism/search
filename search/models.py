@@ -1,7 +1,8 @@
 from search.trienode import Trie
+from django.db import models
 
 
-class Search:
+class Search(models.Model):
 
     def search_text(self, text):
         node = Trie()
