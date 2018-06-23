@@ -7,10 +7,10 @@ class Search:
         node = Trie()
         results = node.search(text)
         if len(results) > 0 :
-            if results[0]['word'] == text:
+            if results[0]['w'] == text:
                 item = results[0]
-                return [item] + sorted(results[1:], key=lambda x: (-x["f"], x["l"]))
+                return [item] + sorted(results[1:], key=lambda x: (-x["f"], len(x["w"])))
             else:
-                return sorted(results, key=lambda x: (-x["f"], x["l"]))
+                return sorted(results, key=lambda x: (-x["f"], len(x["w"])))
         else:
             return []

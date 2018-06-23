@@ -10,12 +10,11 @@ def singleton(class_):
         return instances[class_]
     return getinstance
 
+
 class TrieNode:
     def __init__(self):
         self.children = {}
         self.word = None  # it will store at end of the word
-        self.length = 0
-        self.frequency = 0
 
     def __insert__(self, word, frequency, pos=0):
         """ Insert A word In The Trie"""
@@ -23,10 +22,13 @@ class TrieNode:
         if letter not in self.children:
             self.children[letter] = TrieNode()
 
+        # when the string reaches its end
+        # the end node will store the word
         if pos + 1 == len(word):
-            self.children[letter].word = word
-            self.children[letter].length = pos + 1
-            self.children[letter].frequency = frequency
+            self.children[letter].word = {
+                "w": word,
+                "f": frequency
+            }
         else:
             self.children[letter].__insert__(word, frequency, pos+1)
 
@@ -36,19 +38,16 @@ class TrieNode:
         """ Get All Words In The Trie"""
         x = []
 
+        # return all words recursievely
         for key, node in self.children.items():
             if node.word is not None:
-                x.append(
-                    {
-                        "w": node.word,
-                        "l": node.length,
-                        "f": node.frequency
-                    }
-                )
+                x.append(node.word)
 
             x += node.__get_all__(text)
         return x
 
+    # this will calculate the edit distance of a string from a given text
+    # it gives no of edits requried to make str2 from str1
     def __edit_distance__(self, str1, str2, m, n):
         # Create a table to store results of subproblems
         dp = [[0 for x in range(n + 1)] for x in range(m + 1)]
@@ -87,28 +86,26 @@ class TrieNode:
             if text[pos] in self.children:
                 return resp + self.children[text[pos]].__search__(text, pos+1)
             else:
+                # if the item does'nt matches any children
+                # it will get all the words from the corresponding node
+                # and will calculate the edit distance from the search string
                 resp = self.__get_all__(text)
                 for item in resp:
                     item['edit_distance'] = self.__edit_distance__(item["w"], text, len(item["w"]), len(text))
-                resp = sorted(resp, key=lambda x: (x["edit_distance"], -x["f"], x["l"]))
+                resp = sorted(resp, key=lambda x: (x["edit_distance"], -x["f"], len(item["w"])))
                 return resp
         else:
             resp = self.__get_all__(text)
-            if self.word is not None and self.word == text:
-                resp = [
-                    {
-                        "w": self.word,
-                        "l": self.length,
-                        "f": self.frequency
-                    }
-                ] + resp
+            if self.word is not None and self.word["w"] == text:
+                resp = [self.word] + resp
             return resp
 
 
 class SuffixTrieNode:
+    # words will store the words which are ending with the prefix
     def __init__(self):
         self.children = {}
-        self.words = []  # it will store at end of the word
+        self.words = []  # it will store words
 
     def __insert__(self, word, original_word, frequency, pos=0):
         """ Insert A word In The Trie"""
@@ -119,7 +116,6 @@ class SuffixTrieNode:
         if pos + 1 == len(word):
             self.children[letter].words.append({
                 "w": original_word,
-                "l": len(original_word),
                 "f": frequency
             })
         else:
@@ -175,6 +171,7 @@ class Trie:
         self.suffixNode.__insert__(word, originalWord, frequency)
 
     def search(self, text):
+        # it will search for a corrected text
         result = self.root.__search__(correction(text))
         # result = self.root.__search__(text)
         suffix_result = self.suffixNode.__search__(text)
