@@ -26,7 +26,7 @@ SECRET_KEY = 'jixlp-_&5vurhkm2ko1)&fph4mjmb9e1@2g)*5**qpu#pa7pv&'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["search.thepoleapp.com"]
 
 
 # Application definition
